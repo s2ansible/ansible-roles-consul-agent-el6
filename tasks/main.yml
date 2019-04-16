@@ -1,0 +1,48 @@
+---
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - unzip
+
+- name: unzip
+  unarchive:
+    src:  consul_1.4.2_linux_amd64.zip
+    dest: /usr/local/sbin/
+
+- name: mkdir /etc/consul.d
+  file: path=/etc/consul.d state=directory
+
+- name: Create user
+  user:
+    name: consul
+    shell: /bin/false
+    home: /etc/consul.d
+
+- name: mkdir /var/lib/consul
+  file: path=/var/lib/consul state=directory owner=consul group=consul mode=0755
+
+- name: chown /etc/consul.d
+  file: path=/etc/consul.d state=directory owner=consul group=consul mode=0755
+ 
+
+- name: copy
+  copy: src=consul dest=/etc/init.d/consul owner=root group=root mode=0755
+
+
+- name: Enable service
+  service:
+    name: consul
+    enabled: yes
+
+- name: consul settings
+  template: src=consul.j2 dest=/etc/consul.d/consul.hcl
+
+- name: chown /etc/consul.d/consul.hcl
+  file: path=/etc/consul.d/consul.hcl owner=consul group=consul mode=0640
+
+- name: Start service
+  service:
+    name: consul
+    state: started
