@@ -1,4 +1,4 @@
 datacenter = "dc1"
 data_dir = "/var/lib/consul"
 retry_join = ["xx.xx.xx.xx", "xx.xx.xx.xx", "xx.xx.xx.xx"]
-bind_addr = "{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}"
+bind_addr = "{{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}"
